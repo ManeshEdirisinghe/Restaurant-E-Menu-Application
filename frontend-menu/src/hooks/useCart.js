@@ -44,7 +44,6 @@ export function useCart() {
       }
     });
     
-    setIsCartOpen(true); // Cart එක Open කරනවා
   };
 
   // 4. Remove Item

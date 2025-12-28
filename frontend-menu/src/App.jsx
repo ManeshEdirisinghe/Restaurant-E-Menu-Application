@@ -9,6 +9,7 @@ import ItemModal from './components/ItemModal';
 // import { Toaster } from 'react-hot-toast';
 import Toast from './components/Toast';
 
+
 // --- HOOKS ---
 
 // Prevents search from firing on every keystroke
@@ -772,6 +773,13 @@ function App() {
 
   const { data: menuItems = [], isLoading: isLoadingItems } = useMenuItems(filters);
 
+  const handleAddToCartWithToast = (item, qty) => {
+    addToCart(item, qty);
+
+    setToastMsg(`Added ${qty} ${item.name} to order!`);
+    setShowToast(true);
+  };
+
   // Price range definitions
   const priceRanges = {
     'all': { min: 0, max: Infinity },
@@ -914,12 +922,19 @@ function App() {
 
       {/* <Toaster position="bottom-center" toastOptions={{ duration: 3000 }} /> */}
 
+      <Toast
+        message={toastMsg}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
+
       <ItemModal
         item={selectedItem}
         isOpen={!!selectedItem}
         onClose={handleCloseModal}
-        onAddToCart={addToCart}
+        onAddToCart={handleAddToCartWithToast}
       />
+
 
     </div >
   );

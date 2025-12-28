@@ -1,8 +1,3 @@
-import { Toaster } from 'react-hot-toast';
-
-export default function Toast() {
-  return <Toaster position="top-right" reverseOrder={false} />;
-}
 import React, { useEffect } from 'react';
 import { CheckCircle, X } from 'lucide-react';
 

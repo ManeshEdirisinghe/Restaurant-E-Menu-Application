@@ -1,0 +1,15 @@
+{
+  "name": "test-softlien-fe",
+  "version": "1.0.0",
+  "description": "Test for the FE intern",
+  "main": "index.js",
+  "scripts": {
+    "api": "json-server --watch data-set.json --port 3001",
+    "api:host": "json-server --watch data-set.json --port 3001 --host 0.0.0.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^0.17.4"
+  }
+}

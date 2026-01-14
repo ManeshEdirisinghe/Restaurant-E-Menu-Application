@@ -29,3 +29,15 @@ export async function getMenuItems(params?: GetMenuItemsParams): Promise<MenuIte
 
   return response.json();
 }
+
+export async function getMenuItemById(id: string): Promise<MenuItem> {
+  const response = await fetch(`${API_BASE_URL}/menuItems/${id}`, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch menu item: ${response.statusText}`);
+  }
+
+  return response.json();
+}

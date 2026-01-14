@@ -1,7 +1,5 @@
 'use client';
 
-import Image from 'next/image';
-
 interface HeroProps {
   search: string;
   onSearch: (value: string) => void;
@@ -9,58 +7,46 @@ interface HeroProps {
 
 export default function Hero({ search, onSearch }: HeroProps) {
   return (
-    <div className="relative w-full min-h-[650px] flex items-center justify-center overflow-hidden">
+    <div className="relative h-[600px] flex items-center justify-center">
       {/* Background Image */}
-      <Image
+      <img
         src="/HeroBG.jpg"
         alt="Restaurant background"
-        fill
-        className="object-cover object-center"
-        priority
+        className="absolute inset-0 w-full h-full object-cover"
       />
 
       {/* Dark Burgundy Overlay */}
-      <div className="absolute inset-0 bg-[#351516]/85" />
+      <div className="absolute inset-0 bg-[#4A0E16] opacity-90" />
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 py-20 max-w-5xl mx-auto">
-        {/* EST. 2024 with lines */}
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <span className="w-20 h-[1px] bg-[#D4AF37]" />
-          <span className="text-[#D4AF37] text-base tracking-[0.4em] uppercase font-normal">
+      {/* Content Layer */}
+      <div className="relative z-10 text-center">
+        {/* EST. 2024 Badge with lines */}
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <span className="h-[1px] w-12 bg-[#D4AF37]" />
+          <span className="text-[#D4AF37] text-sm tracking-[0.3em] uppercase">
             EST. 2024
           </span>
-          <span className="w-20 h-[1px] bg-[#D4AF37]" />
+          <span className="h-[1px] w-12 bg-[#D4AF37]" />
         </div>
 
-        {/* Main Title - Larger font */}
-        <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl text-white font-normal mb-8 leading-[1.1]">
-          Delicious Bites
-          <br />
-          Restaurant
+        {/* Main Title */}
+        <h1 className="font-serif text-6xl text-white mb-4">
+          Delicious Bites Restaurant
         </h1>
 
-        {/* Subtitle - Italic */}
-        <p className="text-white text-xl md:text-2xl italic mb-3">
+        {/* Subtitle */}
+        <p className="font-sans text-lg text-gray-200 mb-12">
           Experience culinary excellence
         </p>
 
-        {/* Explore Menu text with line */}
-        <div className="flex flex-col items-center mb-10">
-          <span className="text-[#D4AF37] text-sm tracking-[0.25em] uppercase mb-3">
-            EXPLORE MENU
-          </span>
-          <span className="w-[1px] h-8 bg-[#D4AF37]" />
-        </div>
-
-        {/* Search Input - Matching design */}
-        <div className="max-w-2xl mx-auto">
+        {/* Search Input */}
+        <div className="flex justify-center">
           <input
             type="text"
             value={search}
             onChange={(e) => onSearch(e.target.value)}
             placeholder="Search our menu..."
-            className="w-full px-10 py-5 rounded-full bg-white text-gray-600 placeholder-gray-400 focus:outline-none shadow-xl text-center text-lg font-light"
+            className="w-[480px] py-4 px-8 rounded-full bg-white text-gray-700 placeholder-gray-400 shadow-lg focus:outline-none text-center"
           />
         </div>
       </div>

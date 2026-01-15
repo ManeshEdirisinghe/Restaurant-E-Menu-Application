@@ -1,20 +1,23 @@
 import React from 'react';
 
-export function CategoryNav({ categories, activeCategory, onCategoryChange }) {
+const CategoryNav = ({ categories, activeCategory, onCategoryChange, isLoading }) => {
   return (
-    <nav className="category-nav">
-      <ul className="category-list">
-        {categories.map((category) => (
-          <li key={category.id}>
-            <button
-              className={`category-btn ${activeCategory === category.id ? 'active' : ''}`}
-              onClick={() => onCategoryChange(category.id)}
-            >
-              {category.name}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div className="sticky top-0 z-40 bg-gray-50/80 backdrop-blur-xl border-b border-gray-200/50 py-4 transition-all">
+      <div className="max-w-7xl mx-auto overflow-x-auto no-scrollbar px-4 sm:px-6">
+        {isLoading ? (
+          <div className="flex gap-4">{[1,2,3,4,5].map(i => <div key={i} className="h-12 w-28 bg-gray-200 rounded-full animate-pulse" />)}</div>
+        ) : (
+          <div className="flex gap-3 min-w-max mx-auto">
+            {categories.map((cat) => (
+              <button key={cat.id} onClick={() => onCategoryChange(cat.id)} className={`group flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 border ${activeCategory === cat.id ? 'bg-gray-900 text-white border-gray-900 shadow-lg shadow-gray-900/20 scale-105' : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm'}`}>
+                <span className="text-lg group-hover:scale-110 transition-transform duration-300">{cat.icon}</span>
+                <span>{cat.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
-}
+};
+export default CategoryNav;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
-import { Search, X, ChefHat, Star, Clock, Flame, ArrowRight, Minus, Plus, MapPin, Phone, Instagram, Facebook, Twitter, SlidersHorizontal, ChevronDown, Leaf, Wheat } from 'lucide-react';
+import { Search, X, ChefHat, Star, Clock, Flame, ArrowRight, Minus, Plus, MapPin, Phone, Instagram, Facebook, Twitter, SlidersHorizontal, ChevronDown, Leaf, Wheat, ShoppingCart, Menu } from 'lucide-react';
 
 const API_BASE = 'http://localhost:3001';
 
@@ -89,6 +89,34 @@ const useMenuItems = (filters) => {
 };
 
 // --- COMPONENTS ---
+
+const Header = ({ restaurant, cartItemCount = 0 }) => {
+  return (
+    <header className="absolute top-0 left-0 right-0 z-50 px-4 sm:px-6 py-4">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Logo / Brand */}
+        <div className="flex items-center gap-3">
+          <div className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/20">
+            <ChefHat className="w-6 h-6 text-white" />
+          </div>
+          <span className="text-white font-bold text-lg hidden sm:block">
+            {restaurant?.name || 'Restaurant'}
+          </span>
+        </div>
+
+        {/* Cart Icon */}
+        <button className="relative bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20 hover:bg-white/20 transition-colors">
+          <ShoppingCart className="w-5 h-5 text-white" />
+          {cartItemCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+              {cartItemCount > 9 ? '9+' : cartItemCount}
+            </span>
+          )}
+        </button>
+      </div>
+    </header>
+  );
+};
 
 const Hero = ({ restaurant, searchQuery, onSearchChange, isLoading }) => {
   if (isLoading) return <div className="h-[500px] bg-gray-100 animate-pulse w-full" />;
@@ -416,26 +444,52 @@ const MenuGrid = ({ items, isLoading, onOpenModal }) => {
             
             {/* Content Section */}
             <div className="p-6 flex flex-col flex-grow">
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex justify-between items-start mb-2">
                 <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors leading-tight">
                   {item.name}
                 </h3>
               </div>
+
+              {/* Dietary Badges & Spicy Level */}
+              <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                {/* Dietary Badges */}
+                {item.dietary?.includes('vegetarian') && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                    <Leaf size={10} />
+                    Vegetarian
+                  </span>
+                )}
+                {item.dietary?.includes('vegan') && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                    <Leaf size={10} />
+                    Vegan
+                  </span>
+                )}
+                {item.dietary?.includes('gluten-free') && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                    <Wheat size={10} />
+                    GF
+                  </span>
+                )}
+                {/* Spicy Level Indicator */}
+                {item.spicyLevel > 0 && (
+                  <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                    {[...Array(item.spicyLevel)].map((_, i) => (
+                      <Flame key={i} size={10} className="fill-red-500" />
+                    ))}
+                  </span>
+                )}
+              </div>
               
-              <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-6 flex-grow">
+              <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4 flex-grow">
                 {item.description}
               </p>
               
               <div className="flex items-center justify-between border-t border-gray-50 pt-4 mt-auto">
-                <div className="flex gap-4 text-xs font-medium text-gray-500">
+                <div className="flex gap-2 text-xs font-medium text-gray-500">
                    <span className="flex items-center gap-1.5 bg-orange-50 text-orange-700 px-2.5 py-1 rounded-md">
                      <Clock size={14}/> {item.preparationTime}m
                    </span>
-                   {item.spicyLevel > 0 && (
-                     <span className="flex items-center gap-1.5 bg-red-50 text-red-700 px-2.5 py-1 rounded-md">
-                       <Flame size={14}/> {item.spicyLevel}/3
-                     </span>
-                   )}
                 </div>
                 <button className="flex items-center gap-2 text-sm font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
                   Add <ArrowRight size={16} />
@@ -449,12 +503,25 @@ const MenuGrid = ({ items, isLoading, onOpenModal }) => {
   );
 };
 
+// Size and Add-on options configuration
+const SIZE_OPTIONS = [
+  { id: 'small', label: 'Small', priceModifier: 0 },
+  { id: 'medium', label: 'Medium', priceModifier: 2 },
+  { id: 'large', label: 'Large', priceModifier: 4 },
+];
+
 const ItemModal = ({ item, isOpen, onClose }) => {
   if (!isOpen || !item) return null;
   const [qty, setQty] = useState(1);
+  const [selectedSize, setSelectedSize] = useState('medium');
+
+  // Calculate total price
+  const sizeModifier = SIZE_OPTIONS.find(s => s.id === selectedSize)?.priceModifier || 0;
+  const unitPrice = Number(item.price) + sizeModifier;
+  const totalPrice = unitPrice * qty;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" 
@@ -462,7 +529,7 @@ const ItemModal = ({ item, isOpen, onClose }) => {
       />
       
       {/* Modal Card */}
-      <div className="relative bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row animate-zoom-in">
+      <div className="relative bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row animate-zoom-in my-8">
         
         <button 
           onClick={onClose} 
@@ -472,7 +539,7 @@ const ItemModal = ({ item, isOpen, onClose }) => {
         </button>
 
         {/* Image Side */}
-        <div className="w-full md:w-1/2 h-64 md:h-auto bg-gray-100">
+        <div className="w-full md:w-2/5 h-64 md:h-auto md:min-h-[500px] bg-gray-100">
           <img 
             src={item.image} 
             alt={item.name} 
@@ -482,17 +549,44 @@ const ItemModal = ({ item, isOpen, onClose }) => {
         </div>
 
         {/* Content Side */}
-        <div className="w-full md:w-1/2 p-8 flex flex-col bg-white">
+        <div className="w-full md:w-3/5 p-6 md:p-8 flex flex-col bg-white max-h-[80vh] md:max-h-none overflow-y-auto">
           <div className="flex items-start justify-between mb-2">
             <h2 className="text-2xl font-bold text-gray-900 leading-tight">{item.name}</h2>
           </div>
-          <p className="text-2xl font-bold text-orange-600 mb-6">${Number(item.price).toFixed(2)}</p>
+          <p className="text-2xl font-bold text-orange-600 mb-4">
+            ${Number(item.price).toFixed(2)}
+            {sizeModifier > 0 && <span className="text-sm text-gray-400 font-normal ml-2">+ ${sizeModifier.toFixed(2)} size</span>}
+          </p>
           
-          <div className="prose prose-sm text-gray-500 mb-8 leading-relaxed flex-grow">
+          <div className="text-gray-500 text-sm mb-6 leading-relaxed">
             {item.description}
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mb-8">
+          {/* Size Selection */}
+          <div className="mb-6">
+            <h4 className="text-sm font-bold text-gray-900 mb-3">Choose Size</h4>
+            <div className="flex gap-2">
+              {SIZE_OPTIONS.map((size) => (
+                <button
+                  key={size.id}
+                  onClick={() => setSelectedSize(size.id)}
+                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all border ${
+                    selectedSize === size.id
+                      ? 'bg-gray-900 text-white border-gray-900'
+                      : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div>{size.label}</div>
+                  <div className={`text-xs mt-0.5 ${selectedSize === size.id ? 'text-gray-300' : 'text-gray-400'}`}>
+                    {size.priceModifier === 0 ? 'Base price' : `+$${size.priceModifier.toFixed(2)}`}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Item Info */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
             <div className="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
                <Clock className="text-orange-500" size={20} />
                <div>
@@ -509,6 +603,24 @@ const ItemModal = ({ item, isOpen, onClose }) => {
             </div>
           </div>
 
+          {/* Order Summary */}
+          {sizeModifier > 0 && (
+            <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-100">
+              <h4 className="text-xs font-bold text-gray-500 uppercase mb-2">Your Selection</h4>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between text-gray-600">
+                  <span>Base ({SIZE_OPTIONS.find(s => s.id === selectedSize)?.label})</span>
+                  <span>${(Number(item.price) + sizeModifier).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between font-bold text-gray-900 pt-2 border-t border-gray-200 mt-2">
+                  <span>Unit Price</span>
+                  <span>${unitPrice.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Quantity and Add to Order */}
           <div className="flex gap-4 mt-auto">
             <div className="flex items-center gap-4 bg-gray-50 rounded-xl px-4 border border-gray-100">
                <button onClick={() => setQty(Math.max(1, qty-1))} className="text-gray-400 hover:text-black transition-colors"><Minus size={18}/></button>
@@ -517,9 +629,13 @@ const ItemModal = ({ item, isOpen, onClose }) => {
             </div>
             <button 
               className="flex-1 bg-gray-900 text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/20 active:scale-95 transform duration-100"
-              onClick={() => { alert(`Added ${qty} ${item.name} to cart!`); onClose(); }}
+              onClick={() => { 
+                const sizeLabel = SIZE_OPTIONS.find(s => s.id === selectedSize)?.label;
+                alert(`Added ${qty} ${sizeLabel} ${item.name} to cart!`); 
+                onClose(); 
+              }}
             >
-              Add to Order - ${(item.price * qty).toFixed(2)}
+              Add to Order - ${totalPrice.toFixed(2)}
             </button>
           </div>
         </div>
@@ -669,6 +785,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans selection:bg-orange-100 selection:text-orange-900 flex flex-col">
+      <Header restaurant={restaurant} cartItemCount={0} />
+      
       <Hero 
         restaurant={restaurant}
         searchQuery={searchQuery}

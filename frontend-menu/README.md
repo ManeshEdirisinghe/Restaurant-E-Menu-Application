@@ -1,16 +1,65 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Restaurant E-Menu Application (Frontend)
 
-Currently, two official plugins are available:
+>This is the frontend for the Restaurant E-Menu Application, built with React, Vite, and Tailwind CSS.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- Modern responsive UI for digital restaurant menus
+- Category navigation, search, and advanced filtering
+- Dietary badges, spicy indicators, and item modals
+- Dark mode toggle with system preference and persistence
+- Mobile-first, accessible, and touch-friendly
 
-## React Compiler
+## Tech Stack
+- React 19
+- Vite 7
+- Tailwind CSS 3
+- Lucide React Icons
+- Axios (API calls)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting Started
 
-## Expanding the ESLint configuration
+### Prerequisites
+- Node.js 18+
+- npm 9+
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Install dependencies
+```
+cd frontend-menu
+npm install
+```
+
+### Start the development server
+```
+npm run dev
+```
+The app will be available at [http://localhost:5173](http://localhost:5173) (or next available port).
+
+### API Server
+The frontend expects a mock API running at [http://localhost:3001](http://localhost:3001). Start it from the project root:
+```
+npm run api
+```
+
+## Project Structure
+
+- `src/` — React components, hooks, and assets
+- `App.jsx` — Main app and all UI logic
+- `index.css` — Tailwind and global styles
+- `tailwind.config.js` — Custom breakpoints, dark mode, and theme
+
+## Customization
+
+- **Footer Contact:**
+	- Address: 123 Reid Avenue, Colombo
+	- Phone: +94 11-22-00-000
+- **Dark Mode:** Toggle in the header, persists preference
+
+## Scripts
+- `npm run dev` — Start Vite dev server
+- `npm run build` — Build for production
+- `npm run lint` — Lint code
+- `npm run preview` — Preview production build
+
+---
+© 2026 Softlien (Pvt) Ltd. For assessment/demo use only.

@@ -9,7 +9,7 @@ const Hero = ({ restaurant, searchQuery, onSearchChange, isLoading }) => {
       <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80" alt="Hero" className="absolute inset-0 w-full h-full object-cover opacity-40" />
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-gray-50" />
       <div className="relative z-10 max-w-3xl space-y-6 animate-fade-in">
-        <div className="flex justify-center mb-4"><div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20 shadow-2xl"><ChefHat className="w-12 h-12 text-white" /></div></div>
+        {/* Navigation stickers removed */}
         <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight drop-shadow-sm">{restaurant?.name || "Welcome"}</h1>
         <p className="text-lg md:text-xl text-gray-200 font-light max-w-2xl mx-auto leading-relaxed">{restaurant?.tagline || "Experience culinary excellence"}</p>
         <div className="pt-8 max-w-md mx-auto w-full">

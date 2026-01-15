@@ -716,11 +716,11 @@ const Footer = ({ restaurant }) => (
         <div className="space-y-3 sm:space-y-4 text-gray-400 text-sm sm:text-base">
           <div className="flex items-start gap-3 justify-center sm:justify-start">
             <MapPin className="mt-0.5 shrink-0 text-orange-500" size={18} />
-            <span>{restaurant?.address || "123 Flavor Street"}</span>
+            <span>{restaurant?.address || "123 Reid Avenue, Colombo"}</span>
           </div>
           <div className="flex items-center gap-3 justify-center sm:justify-start">
             <Phone className="shrink-0 text-orange-500" size={18} />
-            <span>{restaurant?.phone}</span>
+            <span>{restaurant?.phone || "+94 11-22-00-000"}</span>
           </div>
         </div>
       </div>

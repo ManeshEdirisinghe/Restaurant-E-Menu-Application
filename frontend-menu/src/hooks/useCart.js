@@ -1,44 +1,65 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-// Custom hook for managing cart state
-export default function useCart(initialCart = []) {
-  const [cart, setCart] = useState(initialCart);
+export function useCart() {
+  // Initialize cart from localStorage
+  const [cartItems, setCartItems] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cart');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
+
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  // Sync cart with localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   // Add item to cart
-  const addToCart = (item) => {
-    setCart((prevCart) => {
-      const existing = prevCart.find((i) => i.id === item.id);
+  const addToCart = (product, qty = 1) => {
+    setCartItems((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
       if (existing) {
-        return prevCart.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        // If item exists, update quantity
+        return prev.map((item) =>
+          item.id === product.id ? { ...item, qty: item.qty + qty } : item
         );
       }
-      return [...prevCart, { ...item, quantity: 1 }];
+      // If new item, add to list
+      return [...prev, { ...product, qty }];
     });
+    setIsCartOpen(true); // Open cart automatically
   };
 
   // Remove item from cart
-  const removeFromCart = (itemId) => {
-    setCart((prevCart) => prevCart.filter((i) => i.id !== itemId));
+  const removeFromCart = (id) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   // Update item quantity
-  const updateQuantity = (itemId, quantity) => {
-    setCart((prevCart) =>
-      prevCart.map((i) =>
-        i.id === itemId ? { ...i, quantity: Math.max(1, quantity) } : i
-      )
+  const updateQty = (id, newQty) => {
+    if (newQty < 1) return;
+    setCartItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, qty: newQty } : item))
     );
   };
 
-  // Clear cart
-  const clearCart = () => setCart([]);
+  // Calculate total price
+  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
+
+  // Calculate total item count
+  const cartCount = cartItems.reduce((count, item) => count + item.qty, 0);
 
   return {
-    cart,
+    cartItems,
+    isCartOpen,
+    setIsCartOpen,
     addToCart,
     removeFromCart,
-    updateQuantity,
-    clearCart,
+    updateQty,
+    cartTotal,
+    cartCount
   };
 }

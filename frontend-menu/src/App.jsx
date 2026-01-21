@@ -855,7 +855,13 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans selection:bg-orange-100 selection:text-orange-900 dark:selection:bg-orange-900 dark:selection:text-orange-100 flex flex-col transition-colors duration-300">
-      <Header restaurant={restaurant} cartItemCount={0} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
+      <Header
+        restaurant={restaurant}
+        cartItemCount={cartCount}  
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={toggleDarkMode}
+        onOpenCart={() => setIsCartOpen(true)} 
+      />
 
       <Hero
         restaurant={restaurant}

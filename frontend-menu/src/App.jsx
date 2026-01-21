@@ -5,6 +5,7 @@ import { useCart } from './hooks/useCart';
 import CartDrawer from './components/CartDrawer';
 const API_BASE = 'http://localhost:3001';
 import CategoryNav from './components/CategoryNav';
+import ItemModal from './components/ItemModal';
 
 // --- HOOKS ---
 

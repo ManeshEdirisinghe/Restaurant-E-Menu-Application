@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Minus, Plus } from 'lucide-react';
+import { X, Clock, Flame, Minus, Plus } from 'lucide-react';
 
+// Size and Add-on options configuration
 const SIZE_OPTIONS = [
   { id: 'small', label: 'Small', priceModifier: 0 },
   { id: 'medium', label: 'Medium', priceModifier: 2 },
@@ -13,6 +14,7 @@ const ItemModal = ({ item, isOpen, onClose, onAddToCart }) => {
   const [qty, setQty] = useState(1);
   const [selectedSize, setSelectedSize] = useState('medium');
 
+  // Modal එක open වෙනකොට reset කරන්න
   useEffect(() => {
     if (isOpen) {
       setQty(1);
@@ -20,92 +22,140 @@ const ItemModal = ({ item, isOpen, onClose, onAddToCart }) => {
     }
   }, [isOpen, item]);
 
-  // මිල ගණනය
+  // Calculate total price
   const sizeModifier = SIZE_OPTIONS.find(s => s.id === selectedSize)?.priceModifier || 0;
   const unitPrice = Number(item.price) + sizeModifier;
   const totalPrice = unitPrice * qty;
 
-  const handleButtonClick = () => {
-    console.log("1. Button Clicked!"); // බොත්තම ඔබපු බව තහවුරු කරගන්න
+  // Add to Cart Logic (මේක තමයි අපි අලුතින් දැම්මේ)
+  const handleAddToCart = () => {
+    const itemToAdd = {
+      ...item,
+      selectedSize,
+      price: unitPrice, // Size එක අනුව වෙනස් වුනු මිල
+      basePrice: item.price
+    };
 
-    // onAddToCart function එක ලැබිලා තියෙනවද බලනවා
-    if (typeof onAddToCart === 'function') {
-      console.log("2. Sending data to App.jsx...");
-      
-      const itemToAdd = {
-        ...item,
-        selectedSize,
-        price: unitPrice,
-        basePrice: item.price
-      };
-      
+    if (onAddToCart) {
       onAddToCart(itemToAdd, qty);
-    } else {
-      console.error("ERROR: onAddToCart function එක ItemModal එකට ලැබී නැත!");
-      alert("Error: Connection to Cart is broken.");
     }
-    
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overflow-y-auto">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
-        onClick={onClose} 
+      <div
+        className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
       />
-      
-      {/* Modal Content */}
-      <div className="relative bg-white dark:bg-gray-800 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
-        
-        {/* Close Button */}
-        <button 
-          onClick={onClose} 
-          className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full hover:bg-gray-200 text-black transition-colors"
+
+      {/* Modal Card - පරණ ලස්සන Design එක */}
+      <div className="relative bg-white dark:bg-gray-800 w-full sm:max-w-2xl lg:max-w-3xl sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row animate-zoom-in sm:my-8 max-h-[95vh] sm:max-h-[90vh]">
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-2.5 sm:p-2 bg-white/80 dark:bg-gray-700/80 backdrop-blur-md rounded-full hover:bg-white dark:hover:bg-gray-700 active:bg-gray-100 dark:active:bg-gray-600 text-gray-800 dark:text-gray-200 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
-          <X size={20} />
+          <X size={22} />
         </button>
 
         {/* Image Side */}
-        <div className="w-full md:w-1/2 h-48 md:h-auto bg-gray-100">
-          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+        <div className="w-full md:w-2/5 h-48 sm:h-56 md:h-auto md:min-h-[500px] bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full object-cover"
+            onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'; }}
+          />
         </div>
 
-        {/* Details Side */}
-        <div className="w-full md:w-1/2 p-6 flex flex-col overflow-y-auto">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{item.name}</h2>
-          <p className="text-orange-600 font-bold text-xl my-2">${unitPrice.toFixed(2)}</p>
+        {/* Content Side */}
+        <div className="w-full md:w-3/5 p-4 sm:p-6 md:p-8 flex flex-col bg-white dark:bg-gray-800 overflow-y-auto flex-1">
+          <div className="flex items-start justify-between mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">{item.name}</h2>
+          </div>
+          <p className="text-2xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+            ${Number(item.price).toFixed(2)}
+            {sizeModifier > 0 && <span className="text-sm text-gray-400 dark:text-gray-500 font-normal ml-2">+ ${sizeModifier.toFixed(2)} size</span>}
+          </p>
 
-          {/* Size Selector */}
-          <div className="my-4">
-            <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Select Size:</p>
+          <div className="text-gray-500 dark:text-gray-400 text-sm mb-6 leading-relaxed">
+            {item.description}
+          </div>
+
+          {/* Size Selection (Old Style) */}
+          <div className="mb-4 sm:mb-6">
+            <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2 sm:mb-3">Choose Size</h4>
             <div className="flex gap-2">
               {SIZE_OPTIONS.map((size) => (
                 <button
                   key={size.id}
                   onClick={() => setSelectedSize(size.id)}
-                  className={`flex-1 py-2 text-xs rounded border ${selectedSize === size.id ? 'bg-orange-500 text-white border-orange-500' : 'bg-gray-100 text-gray-700 border-gray-200'}`}
+                  className={`flex-1 py-3 sm:py-3 px-2 sm:px-4 rounded-xl text-sm font-medium transition-all border min-h-[56px] active:scale-95 ${selectedSize === size.id
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white'
+                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 active:bg-gray-50 dark:active:bg-gray-600'
+                    }`}
                 >
-                  {size.label}
+                  <div className="text-sm sm:text-base">{size.label}</div>
+                  <div className={`text-xs mt-0.5 ${selectedSize === size.id ? 'text-gray-300 dark:text-gray-600' : 'text-gray-400 dark:text-gray-500'}`}>
+                    {size.priceModifier === 0 ? 'Base' : `+$${size.priceModifier.toFixed(2)}`}
+                  </div>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Qty & Add Button */}
-          <div className="mt-auto pt-4 flex flex-col gap-3">
-            <div className="flex items-center justify-between bg-gray-100 dark:bg-gray-700 p-2 rounded-lg">
-               <button onClick={() => setQty(Math.max(1, qty-1))} className="p-2"><Minus size={16}/></button>
-               <span className="font-bold">{qty}</span>
-               <button onClick={() => setQty(qty+1)} className="p-2"><Plus size={16}/></button>
+          {/* Item Info (Icons) */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 p-3 rounded-xl border border-gray-100 dark:border-gray-600">
+              <Clock className="text-orange-500" size={20} />
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Prep Time</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{item.preparationTime} mins</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 p-3 rounded-xl border border-gray-100 dark:border-gray-600">
+              <Flame className={item.spicyLevel > 0 ? "text-red-500" : "text-gray-300 dark:text-gray-500"} size={20} />
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Spiciness</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{['None', 'Mild', 'Medium', 'Hot'][item.spicyLevel]}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Summary (Visible if size changed) */}
+          {sizeModifier > 0 && (
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-4 border border-gray-100 dark:border-gray-600">
+              <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">Your Selection</h4>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between text-gray-600 dark:text-gray-300">
+                  <span>Base ({SIZE_OPTIONS.find(s => s.id === selectedSize)?.label})</span>
+                  <span>${(Number(item.price) + sizeModifier).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between font-bold text-gray-900 dark:text-white pt-2 border-t border-gray-200 dark:border-gray-600 mt-2">
+                  <span>Unit Price</span>
+                  <span>${unitPrice.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Quantity and Add to Order Button */}
+          <div className="flex gap-2 sm:gap-4 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
+            <div className="flex items-center gap-2 sm:gap-4 bg-gray-50 dark:bg-gray-700 rounded-xl px-3 sm:px-4 border border-gray-100 dark:border-gray-600">
+              <button onClick={() => setQty(Math.max(1, qty - 1))} className="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white active:text-orange-500 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><Minus size={20} /></button>
+              <span className="font-bold text-lg w-6 text-center text-gray-900 dark:text-white">{qty}</span>
+              <button onClick={() => setQty(qty + 1)} className="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white active:text-orange-500 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><Plus size={20} /></button>
             </div>
             
-            <button 
-              onClick={handleButtonClick}
-              className="w-full bg-gray-900 dark:bg-orange-600 text-white py-3 rounded-xl font-bold hover:bg-gray-800 active:scale-95 transition-all"
+            {/* Main Button with New Logic */}
+            <button
+              className="flex-1 bg-gray-900 dark:bg-orange-600 text-white py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-800 dark:hover:bg-orange-500 transition-colors shadow-lg shadow-gray-900/20 dark:shadow-orange-600/30 active:scale-[0.98] transform duration-100 min-h-[52px]"
+              onClick={handleAddToCart}
             >
-              Add to Order - ${totalPrice.toFixed(2)}
+              Add - ${totalPrice.toFixed(2)}
             </button>
           </div>
         </div>

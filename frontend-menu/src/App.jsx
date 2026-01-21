@@ -95,7 +95,7 @@ const useMenuItems = (filters) => {
       try {
         let url = `${API_BASE}/menuItems`;
         const params = {};
-        
+
         // Handle filtering
         if (filters.category && filters.category !== 'all') {
           params.category = filters.category;
@@ -121,6 +121,71 @@ const useMenuItems = (filters) => {
 
 // --- COMPONENTS ---
 
+function App() {
+  // Existing hooks...
+  const { restaurant, isLoading: isLoadingRestaurant } = useRestaurant();
+  // ... other hooks ...
+
+  // 2. Initialize the Cart Hook here
+  const {
+    cartItems,
+    isCartOpen,
+    setIsCartOpen,
+    addToCart,
+    removeFromCart,
+    updateQty,
+    cartTotal,
+    cartCount
+  } = useCart();
+
+  // ... existing search/filter logic ...
+
+  return (
+    <div className="...">
+
+      {/* 3. Update Header props */}
+      <Header
+        restaurant={restaurant}
+        cartItemCount={cartCount}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={toggleDarkMode}
+        onOpenCart={() => setIsCartOpen(true)}
+      />
+
+      {/* ... Hero, CategoryNav, FilterBar, MenuGrid ... */}
+
+      <MenuGrid
+        items={filteredAndSortedItems}
+        isLoading={isLoadingItems}
+        onOpenModal={handleOpenModal}
+      />
+
+      <Footer restaurant={restaurant} />
+
+      {/* 4. Update ItemModal props */}
+      <ItemModal
+        item={selectedItem}
+        isOpen={!!selectedItem}
+        onClose={handleCloseModal}
+        onAddToCart={addToCart}
+      />
+
+      {/* 5. Add CartDrawer at the bottom */}
+      <CartDrawer
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        items={cartItems}
+        onRemove={removeFromCart}
+        onUpdateQty={updateQty}
+        total={cartTotal}
+      />
+
+    </div>
+  );
+}
+
+export default App;
+
 const Header = ({ restaurant, cartItemCount = 0, isDarkMode, onToggleDarkMode }) => {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 px-3 sm:px-6 py-3 sm:py-4">
@@ -138,7 +203,7 @@ const Header = ({ restaurant, cartItemCount = 0, isDarkMode, onToggleDarkMode })
         {/* Right side buttons */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Dark Mode Toggle */}
-          <button 
+          <button
             onClick={onToggleDarkMode}
             className="relative bg-white/10 backdrop-blur-md min-w-[44px] min-h-[44px] p-2.5 sm:p-3 rounded-xl border border-white/20 hover:bg-white/20 active:bg-white/30 transition-colors flex items-center justify-center"
             aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -167,30 +232,30 @@ const Header = ({ restaurant, cartItemCount = 0, isDarkMode, onToggleDarkMode })
 
 const Hero = ({ restaurant, searchQuery, onSearchChange, isLoading }) => {
   if (isLoading) return <div className="h-[350px] sm:h-[400px] md:h-[500px] bg-gray-100 animate-pulse w-full" />;
-  
+
   return (
     <div className="relative h-[350px] sm:h-[400px] md:h-[500px] w-full bg-gray-900 overflow-hidden flex items-center justify-center text-center px-4 pt-16 sm:pt-20">
-      <img 
-        src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80" 
-        alt="Hero Background" 
+      <img
+        src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80"
+        alt="Hero Background"
         className="absolute inset-0 w-full h-full object-cover opacity-40"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-gray-50" />
 
       <div className="relative z-10 max-w-3xl space-y-3 sm:space-y-4 md:space-y-6 animate-fade-in px-2">
         <div className="flex justify-center mb-2 sm:mb-4">
-           <div className="bg-white/10 backdrop-blur-md p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-white/20 shadow-2xl">
-             <ChefHat className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" />
-           </div>
+          <div className="bg-white/10 backdrop-blur-md p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-white/20 shadow-2xl">
+            <ChefHat className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" />
+          </div>
         </div>
-        
+
         <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight drop-shadow-sm leading-tight">
           {restaurant?.name || "Welcome"}
         </h1>
         <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-200 font-light max-w-2xl mx-auto leading-relaxed px-2">
           {restaurant?.tagline || "Experience culinary excellence"}
         </p>
-        
+
         <div className="pt-4 sm:pt-6 md:pt-8 max-w-md mx-auto w-full px-2">
           <div className="relative group">
             <input
@@ -202,8 +267,8 @@ const Hero = ({ restaurant, searchQuery, onSearchChange, isLoading }) => {
             />
             <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors" size={20} />
             {searchQuery && (
-              <button 
-                onClick={() => onSearchChange('')} 
+              <button
+                onClick={() => onSearchChange('')}
                 className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-1.5 sm:p-1 hover:bg-gray-100 active:bg-gray-200 rounded-full text-gray-400 hover:text-black transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center"
               >
                 <X size={18} />
@@ -222,7 +287,7 @@ const CategoryNav = ({ categories, activeCategory, onCategoryChange, isLoading }
       <div className="max-w-7xl mx-auto overflow-x-auto no-scrollbar px-3 sm:px-6 -mx-1">
         {isLoading ? (
           <div className="flex gap-2 sm:gap-4">
-             {[1,2,3,4,5].map(i => <div key={i} className="h-10 sm:h-12 w-24 sm:w-28 bg-gray-200 rounded-full animate-pulse flex-shrink-0" />)}
+            {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-10 sm:h-12 w-24 sm:w-28 bg-gray-200 rounded-full animate-pulse flex-shrink-0" />)}
           </div>
         ) : (
           <div className="flex gap-2 sm:gap-3 min-w-max px-1">
@@ -232,8 +297,8 @@ const CategoryNav = ({ categories, activeCategory, onCategoryChange, isLoading }
                 onClick={() => onCategoryChange(cat.id)}
                 className={`
                   group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 border flex-shrink-0 min-h-[40px] sm:min-h-[44px] active:scale-95
-                  ${activeCategory === cat.id 
-                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-lg shadow-gray-900/20 dark:shadow-white/10' 
+                  ${activeCategory === cat.id
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-lg shadow-gray-900/20 dark:shadow-white/10'
                     : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 active:bg-gray-100 dark:active:bg-gray-600'}
                 `}
               >
@@ -309,11 +374,10 @@ const FilterBar = ({
             {/* Filter button - Touch-friendly */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border transition-all min-h-[44px] active:scale-95 ${
-                showFilters || hasActiveFilters
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border transition-all min-h-[44px] active:scale-95 ${showFilters || hasActiveFilters
                   ? 'bg-orange-50 dark:bg-orange-900/30 border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-400'
                   : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500 active:bg-gray-50 dark:active:bg-gray-600'
-              }`}
+                }`}
             >
               <SlidersHorizontal size={18} />
               <span className="font-medium text-sm sm:text-base hidden xs:inline">Filters</span>
@@ -354,11 +418,10 @@ const FilterBar = ({
                     <button
                       key={range.value}
                       onClick={() => onPriceRangeChange(range.value)}
-                      className={`px-3 sm:px-4 py-2 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all min-h-[40px] active:scale-95 ${
-                        priceRange === range.value
+                      className={`px-3 sm:px-4 py-2 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all min-h-[40px] active:scale-95 ${priceRange === range.value
                           ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'
-                      }`}
+                        }`}
                     >
                       {range.label}
                     </button>
@@ -377,11 +440,10 @@ const FilterBar = ({
                       <button
                         key={diet.value}
                         onClick={() => onDietaryChange(diet.value)}
-                        className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all min-h-[40px] active:scale-95 ${
-                          isActive
+                        className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all min-h-[40px] active:scale-95 ${isActive
                             ? `${diet.bgActive} ${diet.textActive}`
                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'
-                        }`}
+                          }`}
                       >
                         <IconComponent size={14} />
                         <span className="hidden xs:inline">{diet.label}</span>
@@ -465,34 +527,34 @@ const MenuGrid = ({ items, isLoading, onOpenModal }) => {
     <div className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8 md:py-12">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
         {items.map((item) => (
-          <div 
-            key={item.id} 
+          <div
+            key={item.id}
             onClick={() => onOpenModal(item)}
             className="group bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 sm:hover:-translate-y-1 transition-all duration-300 sm:duration-500 cursor-pointer flex flex-col h-full active:scale-[0.98] sm:active:scale-100"
           >
             {/* Image Section */}
             <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-gray-100 dark:bg-gray-700">
-              <img 
-                src={item.image} 
-                alt={item.name} 
+              <img
+                src={item.image}
+                alt={item.name}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
-                onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'; }} 
+                onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'; }}
               />
-              
+
               <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex flex-col gap-2">
-                 {item.popular && (
-                   <span className="bg-white/95 backdrop-blur px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-bold text-gray-900 shadow-sm flex items-center gap-1 sm:gap-1.5">
-                     <Star size={10} className="text-yellow-500 fill-yellow-500 sm:w-3 sm:h-3"/> Popular
-                   </span>
-                 )}
+                {item.popular && (
+                  <span className="bg-white/95 backdrop-blur px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-bold text-gray-900 shadow-sm flex items-center gap-1 sm:gap-1.5">
+                    <Star size={10} className="text-yellow-500 fill-yellow-500 sm:w-3 sm:h-3" /> Popular
+                  </span>
+                )}
               </div>
-              
+
               <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 bg-gray-900/95 backdrop-blur text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg">
                 <span className="font-bold tracking-wide text-sm sm:text-base">${Number(item.price).toFixed(2)}</span>
               </div>
             </div>
-            
+
             {/* Content Section */}
             <div className="p-4 sm:p-5 md:p-6 flex flex-col flex-grow">
               <div className="flex justify-between items-start mb-2">
@@ -532,16 +594,16 @@ const MenuGrid = ({ items, isLoading, onOpenModal }) => {
                   </span>
                 )}
               </div>
-              
+
               <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm leading-relaxed line-clamp-2 mb-3 sm:mb-4 flex-grow">
                 {item.description}
               </p>
-              
+
               <div className="flex items-center justify-between border-t border-gray-50 dark:border-gray-700 pt-3 sm:pt-4 mt-auto">
                 <div className="flex gap-2 text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400">
-                   <span className="flex items-center gap-1 sm:gap-1.5 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-2 sm:px-2.5 py-1 rounded-md">
-                     <Clock size={12} className="sm:w-[14px] sm:h-[14px]"/> {item.preparationTime}m
-                   </span>
+                  <span className="flex items-center gap-1 sm:gap-1.5 bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 px-2 sm:px-2.5 py-1 rounded-md">
+                    <Clock size={12} className="sm:w-[14px] sm:h-[14px]" /> {item.preparationTime}m
+                  </span>
                 </div>
                 <button className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors min-h-[32px] px-2">
                   Add <ArrowRight size={14} className="sm:w-4 sm:h-4" />
@@ -575,17 +637,17 @@ const ItemModal = ({ item, isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overflow-y-auto">
       {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" 
+      <div
+        className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
-      
+
       {/* Modal Card - Full width on mobile, centered on larger screens */}
       <div className="relative bg-white dark:bg-gray-800 w-full sm:max-w-2xl lg:max-w-3xl sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row animate-zoom-in sm:my-8 max-h-[95vh] sm:max-h-[90vh]">
-        
+
         {/* Close button - Touch-friendly */}
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-2.5 sm:p-2 bg-white/80 dark:bg-gray-700/80 backdrop-blur-md rounded-full hover:bg-white dark:hover:bg-gray-700 active:bg-gray-100 dark:active:bg-gray-600 text-gray-800 dark:text-gray-200 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
           <X size={22} />
@@ -593,10 +655,10 @@ const ItemModal = ({ item, isOpen, onClose }) => {
 
         {/* Image Side */}
         <div className="w-full md:w-2/5 h-48 sm:h-56 md:h-auto md:min-h-[500px] bg-gray-100 dark:bg-gray-700 flex-shrink-0">
-          <img 
-            src={item.image} 
-            alt={item.name} 
-            className="w-full h-full object-cover" 
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full object-cover"
             onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'; }}
           />
         </div>
@@ -610,7 +672,7 @@ const ItemModal = ({ item, isOpen, onClose }) => {
             ${Number(item.price).toFixed(2)}
             {sizeModifier > 0 && <span className="text-sm text-gray-400 dark:text-gray-500 font-normal ml-2">+ ${sizeModifier.toFixed(2)} size</span>}
           </p>
-          
+
           <div className="text-gray-500 dark:text-gray-400 text-sm mb-6 leading-relaxed">
             {item.description}
           </div>
@@ -623,11 +685,10 @@ const ItemModal = ({ item, isOpen, onClose }) => {
                 <button
                   key={size.id}
                   onClick={() => setSelectedSize(size.id)}
-                  className={`flex-1 py-3 sm:py-3 px-2 sm:px-4 rounded-xl text-sm font-medium transition-all border min-h-[56px] active:scale-95 ${
-                    selectedSize === size.id
+                  className={`flex-1 py-3 sm:py-3 px-2 sm:px-4 rounded-xl text-sm font-medium transition-all border min-h-[56px] active:scale-95 ${selectedSize === size.id
                       ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white'
                       : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 active:bg-gray-50 dark:active:bg-gray-600'
-                  }`}
+                    }`}
                 >
                   <div className="text-sm sm:text-base">{size.label}</div>
                   <div className={`text-xs mt-0.5 ${selectedSize === size.id ? 'text-gray-300 dark:text-gray-600' : 'text-gray-400 dark:text-gray-500'}`}>
@@ -641,18 +702,18 @@ const ItemModal = ({ item, isOpen, onClose }) => {
           {/* Item Info */}
           <div className="grid grid-cols-2 gap-3 mb-6">
             <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 p-3 rounded-xl border border-gray-100 dark:border-gray-600">
-               <Clock className="text-orange-500" size={20} />
-               <div>
-                 <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Prep Time</p>
-                 <p className="text-sm font-bold text-gray-900 dark:text-white">{item.preparationTime} mins</p>
-               </div>
+              <Clock className="text-orange-500" size={20} />
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Prep Time</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{item.preparationTime} mins</p>
+              </div>
             </div>
             <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 p-3 rounded-xl border border-gray-100 dark:border-gray-600">
-               <Flame className={item.spicyLevel > 0 ? "text-red-500" : "text-gray-300 dark:text-gray-500"} size={20} />
-               <div>
-                 <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Spiciness</p>
-                 <p className="text-sm font-bold text-gray-900 dark:text-white">{['None', 'Mild', 'Medium', 'Hot'][item.spicyLevel]}</p>
-               </div>
+              <Flame className={item.spicyLevel > 0 ? "text-red-500" : "text-gray-300 dark:text-gray-500"} size={20} />
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Spiciness</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{['None', 'Mild', 'Medium', 'Hot'][item.spicyLevel]}</p>
+              </div>
             </div>
           </div>
 
@@ -676,16 +737,16 @@ const ItemModal = ({ item, isOpen, onClose }) => {
           {/* Quantity and Add to Order */}
           <div className="flex gap-2 sm:gap-4 mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
             <div className="flex items-center gap-2 sm:gap-4 bg-gray-50 dark:bg-gray-700 rounded-xl px-3 sm:px-4 border border-gray-100 dark:border-gray-600">
-               <button onClick={() => setQty(Math.max(1, qty-1))} className="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white active:text-orange-500 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><Minus size={20}/></button>
-               <span className="font-bold text-lg w-6 text-center text-gray-900 dark:text-white">{qty}</span>
-               <button onClick={() => setQty(qty+1)} className="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white active:text-orange-500 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><Plus size={20}/></button>
+              <button onClick={() => setQty(Math.max(1, qty - 1))} className="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white active:text-orange-500 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><Minus size={20} /></button>
+              <span className="font-bold text-lg w-6 text-center text-gray-900 dark:text-white">{qty}</span>
+              <button onClick={() => setQty(qty + 1)} className="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white active:text-orange-500 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><Plus size={20} /></button>
             </div>
-            <button 
+            <button
               className="flex-1 bg-gray-900 dark:bg-orange-600 text-white py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-800 dark:hover:bg-orange-500 transition-colors shadow-lg shadow-gray-900/20 dark:shadow-orange-600/30 active:scale-[0.98] transform duration-100 min-h-[52px]"
-              onClick={() => { 
+              onClick={() => {
                 const sizeLabel = SIZE_OPTIONS.find(s => s.id === selectedSize)?.label;
-                alert(`Added ${qty} ${sizeLabel} ${item.name} to cart!`); 
-                onClose(); 
+                alert(`Added ${qty} ${sizeLabel} ${item.name} to cart!`);
+                onClose();
               }}
             >
               Add - ${totalPrice.toFixed(2)}
@@ -704,14 +765,14 @@ const Footer = ({ restaurant }) => (
         <h3 className="text-xl sm:text-2xl font-bold tracking-tight">{restaurant?.name || "Restaurant"}</h3>
         <p className="text-gray-400 leading-relaxed max-w-xs mx-auto sm:mx-0 text-sm sm:text-base">{restaurant?.description}</p>
         <div className="flex gap-3 sm:gap-4 pt-4 justify-center sm:justify-start">
-           {[Instagram, Facebook, Twitter].map((Icon, i) => (
-             <a key={i} href="#" className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-orange-500 active:bg-orange-600 transition-colors">
-               <Icon size={18} />
-             </a>
-           ))}
+          {[Instagram, Facebook, Twitter].map((Icon, i) => (
+            <a key={i} href="#" className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-orange-500 active:bg-orange-600 transition-colors">
+              <Icon size={18} />
+            </a>
+          ))}
         </div>
       </div>
-      
+
       <div className="text-center sm:text-left">
         <h4 className="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-gray-200">Contact</h4>
         <div className="space-y-3 sm:space-y-4 text-gray-400 text-sm sm:text-base">
@@ -746,17 +807,17 @@ function App() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-  
+
   // New filter states
   const [sortBy, setSortBy] = useState("default");
   const [priceRange, setPriceRange] = useState("all");
   const [dietaryFilters, setDietaryFilters] = useState([]);
 
   const debouncedSearch = useDebounce(searchQuery, 300);
-  
+
   const { data: restaurant, isLoading: isLoadingRestaurant } = useRestaurant();
   const { data: categories = [], isLoading: isLoadingCategories } = useCategories();
-  
+
   const filters = useMemo(() => ({
     category: activeCategory,
     search: debouncedSearch,
@@ -785,7 +846,7 @@ function App() {
 
     // Apply dietary filters
     if (dietaryFilters.length > 0) {
-      result = result.filter(item => 
+      result = result.filter(item =>
         dietaryFilters.every(diet => item.dietary?.includes(diet))
       );
     }
@@ -819,7 +880,7 @@ function App() {
   const handleSearchChange = useCallback((val) => setSearchQuery(val), []);
   const handleOpenModal = useCallback((item) => setSelectedItem(item), []);
   const handleCloseModal = useCallback(() => setSelectedItem(null), []);
-  
+
   // Dark mode
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
@@ -827,8 +888,8 @@ function App() {
   const handleSortChange = useCallback((val) => setSortBy(val), []);
   const handlePriceRangeChange = useCallback((val) => setPriceRange(val), []);
   const handleDietaryChange = useCallback((diet) => {
-    setDietaryFilters(prev => 
-      prev.includes(diet) 
+    setDietaryFilters(prev =>
+      prev.includes(diet)
         ? prev.filter(d => d !== diet)
         : [...prev, diet]
     );
@@ -842,8 +903,8 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans selection:bg-orange-100 selection:text-orange-900 dark:selection:bg-orange-900 dark:selection:text-orange-100 flex flex-col transition-colors duration-300">
       <Header restaurant={restaurant} cartItemCount={0} isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
-      
-      <Hero 
+
+      <Hero
         restaurant={restaurant}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
@@ -869,7 +930,7 @@ function App() {
         onClearFilters={handleClearFilters}
       />
 
-      <MenuGrid 
+      <MenuGrid
         items={filteredAndSortedItems}
         isLoading={isLoadingItems}
         onOpenModal={handleOpenModal}
@@ -877,10 +938,10 @@ function App() {
 
       <Footer restaurant={restaurant} />
 
-      <ItemModal 
-        item={selectedItem} 
-        isOpen={!!selectedItem} 
-        onClose={handleCloseModal} 
+      <ItemModal
+        item={selectedItem}
+        isOpen={!!selectedItem}
+        onClose={handleCloseModal}
       />
     </div>
   );

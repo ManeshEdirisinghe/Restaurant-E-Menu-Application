@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import { Search, X, ChefHat, Star, Clock, Flame, ArrowRight, Minus, Plus, MapPin, Phone, Instagram, Facebook, Twitter, SlidersHorizontal, ChevronDown, Leaf, Wheat, ShoppingCart, Menu, Moon, Sun } from 'lucide-react';
-
+import { useCart } from './hooks/useCart';
+import CartDrawer from './components/CartDrawer';
 const API_BASE = 'http://localhost:3001';
 
 // --- HOOKS ---

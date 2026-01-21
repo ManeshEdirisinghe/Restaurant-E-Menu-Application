@@ -77,7 +77,7 @@ const useCategories = () => {
     axios.get(`${API_BASE}/categories`)
       .then(res => {
         // Prepend "All" option manually
-        setData([{ id: 'all', name: 'View All'}, ...res.data]);
+        setData([{ id: 'all', name: 'View All' }, ...res.data]);
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false));
@@ -858,10 +858,10 @@ function App() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans selection:bg-orange-100 selection:text-orange-900 dark:selection:bg-orange-900 dark:selection:text-orange-100 flex flex-col transition-colors duration-300">
       <Header
         restaurant={restaurant}
-        cartItemCount={cartCount}  
+        cartItemCount={cartCount}
         isDarkMode={isDarkMode}
         onToggleDarkMode={toggleDarkMode}
-        onOpenCart={() => setIsCartOpen(true)} 
+        onOpenCart={() => setIsCartOpen(true)}
       />
 
       <Hero
@@ -908,11 +908,19 @@ function App() {
 
       <Footer restaurant={restaurant} />
 
-      <ItemModal
+      {/* <ItemModal
         item={selectedItem}
         isOpen={!!selectedItem}
         onClose={handleCloseModal}
         onAddToCart={addToCart}
+      /> */}
+
+      <ItemModal
+        item={selectedItem}
+        isOpen={!!selectedItem}
+        onClose={handleCloseModal}
+        // මේ පහළ පේළිය වෙනස් කරන්න:
+        onAddToCart={(item, qty) => alert("TEST SUCCESS: " + item.name + " - Qty: " + qty)}
       />
     </div >
   );

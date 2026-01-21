@@ -121,70 +121,7 @@ const useMenuItems = (filters) => {
 
 // --- COMPONENTS ---
 
-function App() {
-  // Existing hooks...
-  const { restaurant, isLoading: isLoadingRestaurant } = useRestaurant();
-  // ... other hooks ...
 
-  // 2. Initialize the Cart Hook here
-  const {
-    cartItems,
-    isCartOpen,
-    setIsCartOpen,
-    addToCart,
-    removeFromCart,
-    updateQty,
-    cartTotal,
-    cartCount
-  } = useCart();
-
-  // ... existing search/filter logic ...
-
-  return (
-    <div className="...">
-
-      {/* 3. Update Header props */}
-      <Header
-        restaurant={restaurant}
-        cartItemCount={cartCount}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={toggleDarkMode}
-        onOpenCart={() => setIsCartOpen(true)}
-      />
-
-      {/* ... Hero, CategoryNav, FilterBar, MenuGrid ... */}
-
-      <MenuGrid
-        items={filteredAndSortedItems}
-        isLoading={isLoadingItems}
-        onOpenModal={handleOpenModal}
-      />
-
-      <Footer restaurant={restaurant} />
-
-      {/* 4. Update ItemModal props */}
-      <ItemModal
-        item={selectedItem}
-        isOpen={!!selectedItem}
-        onClose={handleCloseModal}
-        onAddToCart={addToCart}
-      />
-
-      {/* 5. Add CartDrawer at the bottom */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        items={cartItems}
-        onRemove={removeFromCart}
-        onUpdateQty={updateQty}
-        total={cartTotal}
-      />
-
-    </div>
-  );
-}
-
-export default App;
 
 const Header = ({ restaurant, cartItemCount, isDarkMode, onToggleDarkMode }) => {
   return (
@@ -806,10 +743,12 @@ const Footer = ({ restaurant }) => (
 
 // --- MAIN APP COMPONENT ---
 
+
 function App() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
+
 
   // New filter states
   const [sortBy, setSortBy] = useState("default");
@@ -884,6 +823,17 @@ function App() {
   const handleOpenModal = useCallback((item) => setSelectedItem(item), []);
   const handleCloseModal = useCallback(() => setSelectedItem(null), []);
 
+  const {
+    cartItems,
+    isCartOpen,
+    setIsCartOpen,
+    addToCart,
+    removeFromCart,
+    updateQty,
+    cartTotal,
+    cartCount
+  } = useCart();
+
   // Dark mode
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
@@ -909,9 +859,10 @@ function App() {
 
       <Hero
         restaurant={restaurant}
-        searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
-        isLoading={isLoadingRestaurant}
+        cartItemCount={cartCount}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={toggleDarkMode}
+        onOpenCart={() => setIsCartOpen(true)}
       />
 
       <CategoryNav
@@ -933,6 +884,15 @@ function App() {
         onClearFilters={handleClearFilters}
       />
 
+      <CartDrawer
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        items={cartItems}
+        onRemove={removeFromCart}
+        onUpdateQty={updateQty}
+        total={cartTotal}
+      />
+
       <MenuGrid
         items={filteredAndSortedItems}
         isLoading={isLoadingItems}
@@ -945,8 +905,9 @@ function App() {
         item={selectedItem}
         isOpen={!!selectedItem}
         onClose={handleCloseModal}
+        onAddToCart={addToCart}
       />
-    </div>
+    </div >
   );
 }
 

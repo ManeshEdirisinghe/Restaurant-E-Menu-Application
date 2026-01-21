@@ -7,7 +7,6 @@ const SIZE_OPTIONS = [
   { id: 'medium', label: 'Medium', priceModifier: 2 },
   { id: 'large', label: 'Large', priceModifier: 4 },
 ];
-
 const ItemModal = ({ item, isOpen, onClose, onAddToCart }) => {
   if (!isOpen || !item) return null;
   

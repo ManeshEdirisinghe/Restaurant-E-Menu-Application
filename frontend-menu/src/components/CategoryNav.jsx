@@ -12,9 +12,18 @@ import {
 
 const CategoryNav = ({ categories, activeCategory, onCategoryChange, isLoading }) => {
   
+  const getCategoryIcon = (categoryName) => {
+    const name = (categoryName || '').toLowerCase();
 
+    if (name.includes('view all') || name.includes('all')) return <UtensilsCrossed size={20} />;
+    if (name.includes('appetizer')) return <Salad size={20} />;
+    if (name.includes('main')) return <Utensils size={20} />;
+    if (name.includes('dessert') || name.includes('cake')) return <Cake size={20} />;
+    if (name.includes('beverage') || name.includes('drink')) return <CupSoda size={20} />;
+    if (name.includes('pizza')) return <Pizza size={20} />;
+    if (name.includes('soup')) return <Soup size={20} />;
+    if (name.includes('coffee') || name.includes('tea')) return <Coffee size={20} />;
     
-    // Default
     return <UtensilsCrossed size={20} />;
   };
 

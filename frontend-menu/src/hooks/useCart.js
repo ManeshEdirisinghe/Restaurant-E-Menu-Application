@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 export function useCart() {
-  // Initialize cart from localStorage
+  // 1. LocalStorage එකෙන් Data ගන්නවා
   const [cartItems, setCartItems] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('cart');
@@ -12,48 +12,56 @@ export function useCart() {
 
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Sync cart with localStorage whenever it changes
+  // 2. Cart එක වෙනස් වෙන හැම වෙලේම LocalStorage Save කරනවා
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // Add item to cart
-  // useCart.js ඇතුලේ
+  // 3. Add to Cart Function එක (මෙතන තමයි වෙනස කළේ)
   const addToCart = (product, qty = 1) => {
+    console.log("Adding to cart:", product); // Testing සඳහා Log එකක්
+
     setCartItems((prev) => {
-      // ID එක සහ Size එක දෙකම සමාන නම් පමණක් Quantity එක වැඩි කරන්න
-      const existing = prev.find((item) => item.id === product.id && item.selectedSize === product.selectedSize);
+      // කලින් මේ Item එකම (එම Size එකෙන්ම) තියෙනවාද බලනවා
+      const existingItemIndex = prev.findIndex(
+        (item) => item.id === product.id && item.selectedSize === product.selectedSize
+      );
 
-      if (existing) {
-        return prev.map((item) =>
-          (item.id === product.id && item.selectedSize === product.selectedSize)
-            ? { ...item, qty: item.qty + qty }
-            : item
-        );
+      if (existingItemIndex > -1) {
+        // තියෙනවා නම් Qty එක විතරක් වැඩි කරනවා
+        const newCart = [...prev];
+        newCart[existingItemIndex].qty += qty;
+        return newCart;
+      } else {
+        // අලුත් Item එකක් නම් අලුතින්ම එකතු කරනවා
+        // Unique ID එකක් හදනවා (ID + Size) නැත්නම් key error එන්න පුළුවන්
+        const newItem = {
+          ...product,
+          cartId: `${product.id}-${product.selectedSize}`, // React key එක සඳහා
+          qty: qty
+        };
+        return [...prev, newItem];
       }
-      // නැත්නම් අලුත් එකක් විදියට එකතු කරන්න
-      return [...prev, { ...product, qty }];
     });
-    setIsCartOpen(true); // Item එක දැම්ම ගමන් Cart එක Open වෙනවා
+    
+    setIsCartOpen(true); // Cart එක Open කරනවා
   };
 
-  // Remove item from cart
-  const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  // 4. Remove Item
+  const removeFromCart = (cartId) => {
+    setCartItems((prev) => prev.filter((item) => item.cartId !== cartId));
   };
 
-  // Update item quantity
-  const updateQty = (id, newQty) => {
+  // 5. Update Quantity
+  const updateQty = (cartId, newQty) => {
     if (newQty < 1) return;
     setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, qty: newQty } : item))
+      prev.map((item) => (item.cartId === cartId ? { ...item, qty: newQty } : item))
     );
   };
 
-  // Calculate total price
+  // Totals ගණනය කිරීම
   const cartTotal = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
-
-  // Calculate total item count
   const cartCount = cartItems.reduce((count, item) => count + item.qty, 0);
 
   return {

@@ -186,7 +186,7 @@ function App() {
 
 export default App;
 
-const Header = ({ restaurant, cartItemCount = 0, isDarkMode, onToggleDarkMode }) => {
+const Header = ({ restaurant, cartItemCount, isDarkMode, onToggleDarkMode }) => {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 px-3 sm:px-6 py-3 sm:py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -216,11 +216,14 @@ const Header = ({ restaurant, cartItemCount = 0, isDarkMode, onToggleDarkMode })
           </button>
 
           {/* Cart Icon */}
-          <button className="relative bg-white/10 backdrop-blur-md min-w-[44px] min-h-[44px] p-2.5 sm:p-3 rounded-xl border border-white/20 hover:bg-white/20 active:bg-white/30 transition-colors flex items-center justify-center">
-            <ShoppingCart className="w-5 h-5 sm:w-5 sm:h-5 text-white" />
+          <button
+            onClick={onOpenCart}
+            className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <ShoppingCart size={24} className="text-gray-700 dark:text-gray-200" />
             {cartItemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {cartItemCount > 9 ? '9+' : cartItemCount}
+              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">
+                {cartItemCount}
               </span>
             )}
           </button>
@@ -375,8 +378,8 @@ const FilterBar = ({
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border transition-all min-h-[44px] active:scale-95 ${showFilters || hasActiveFilters
-                  ? 'bg-orange-50 dark:bg-orange-900/30 border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-400'
-                  : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500 active:bg-gray-50 dark:active:bg-gray-600'
+                ? 'bg-orange-50 dark:bg-orange-900/30 border-orange-200 dark:border-orange-700 text-orange-700 dark:text-orange-400'
+                : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-500 active:bg-gray-50 dark:active:bg-gray-600'
                 }`}
             >
               <SlidersHorizontal size={18} />
@@ -419,8 +422,8 @@ const FilterBar = ({
                       key={range.value}
                       onClick={() => onPriceRangeChange(range.value)}
                       className={`px-3 sm:px-4 py-2 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all min-h-[40px] active:scale-95 ${priceRange === range.value
-                          ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'
+                        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'
                         }`}
                     >
                       {range.label}
@@ -441,8 +444,8 @@ const FilterBar = ({
                         key={diet.value}
                         onClick={() => onDietaryChange(diet.value)}
                         className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all min-h-[40px] active:scale-95 ${isActive
-                            ? `${diet.bgActive} ${diet.textActive}`
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'
+                          ? `${diet.bgActive} ${diet.textActive}`
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500'
                           }`}
                       >
                         <IconComponent size={14} />
@@ -686,8 +689,8 @@ const ItemModal = ({ item, isOpen, onClose }) => {
                   key={size.id}
                   onClick={() => setSelectedSize(size.id)}
                   className={`flex-1 py-3 sm:py-3 px-2 sm:px-4 rounded-xl text-sm font-medium transition-all border min-h-[56px] active:scale-95 ${selectedSize === size.id
-                      ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white'
-                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 active:bg-gray-50 dark:active:bg-gray-600'
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white'
+                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 active:bg-gray-50 dark:active:bg-gray-600'
                     }`}
                 >
                   <div className="text-sm sm:text-base">{size.label}</div>

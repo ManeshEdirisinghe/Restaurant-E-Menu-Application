@@ -4,6 +4,7 @@ import { Search, X, ChefHat, Star, Clock, Flame, ArrowRight, Minus, Plus, MapPin
 import { useCart } from './hooks/useCart';
 import CartDrawer from './components/CartDrawer';
 const API_BASE = 'http://localhost:3001';
+import CategoryNav from './components/CategoryNav';
 
 // --- HOOKS ---
 
@@ -221,37 +222,37 @@ const Hero = ({ restaurant, searchQuery, onSearchChange, isLoading }) => {
   );
 };
 
-const CategoryNav = ({ categories, activeCategory, onCategoryChange, isLoading }) => {
-  return (
-    <div className="sticky top-0 z-40 bg-gray-50/80 backdrop-blur-xl border-b border-gray-200/50 py-3 sm:py-4 transition-all">
-      <div className="max-w-7xl mx-auto overflow-x-auto no-scrollbar px-3 sm:px-6 -mx-1">
-        {isLoading ? (
-          <div className="flex gap-2 sm:gap-4">
-            {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-10 sm:h-12 w-24 sm:w-28 bg-gray-200 rounded-full animate-pulse flex-shrink-0" />)}
-          </div>
-        ) : (
-          <div className="flex gap-2 sm:gap-3 min-w-max px-1">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => onCategoryChange(cat.id)}
-                className={`
-                  group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 border flex-shrink-0 min-h-[40px] sm:min-h-[44px] active:scale-95
-                  ${activeCategory === cat.id
-                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-lg shadow-gray-900/20 dark:shadow-white/10'
-                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 active:bg-gray-100 dark:active:bg-gray-600'}
-                `}
-              >
-                <span className="text-base sm:text-lg">{cat.icon}</span>
-                <span className="whitespace-nowrap">{cat.name}</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+// const CategoryNav = ({ categories, activeCategory, onCategoryChange, isLoading }) => {
+//   return (
+//     <div className="sticky top-0 z-40 bg-gray-50/80 backdrop-blur-xl border-b border-gray-200/50 py-3 sm:py-4 transition-all">
+//       <div className="max-w-7xl mx-auto overflow-x-auto no-scrollbar px-3 sm:px-6 -mx-1">
+//         {isLoading ? (
+//           <div className="flex gap-2 sm:gap-4">
+//             {[1, 2, 3, 4, 5].map(i => <div key={i} className="h-10 sm:h-12 w-24 sm:w-28 bg-gray-200 rounded-full animate-pulse flex-shrink-0" />)}
+//           </div>
+//         ) : (
+//           <div className="flex gap-2 sm:gap-3 min-w-max px-1">
+//             {categories.map((cat) => (
+//               <button
+//                 key={cat.id}
+//                 onClick={() => onCategoryChange(cat.id)}
+//                 className={`
+//                   group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 border flex-shrink-0 min-h-[40px] sm:min-h-[44px] active:scale-95
+//                   ${activeCategory === cat.id
+//                     ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-lg shadow-gray-900/20 dark:shadow-white/10'
+//                     : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 active:bg-gray-100 dark:active:bg-gray-600'}
+//                 `}
+//               >
+//                 <span className="text-base sm:text-lg">{cat.icon}</span>
+//                 <span className="whitespace-nowrap">{cat.name}</span>
+//               </button>
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
 
 // --- FILTER BAR COMPONENT ---
 const SORT_OPTIONS = [

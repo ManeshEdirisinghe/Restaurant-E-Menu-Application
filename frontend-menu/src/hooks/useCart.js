@@ -18,19 +18,23 @@ export function useCart() {
   }, [cartItems]);
 
   // Add item to cart
+  // useCart.js ඇතුලේ
   const addToCart = (product, qty = 1) => {
     setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
+      // ID එක සහ Size එක දෙකම සමාන නම් පමණක් Quantity එක වැඩි කරන්න
+      const existing = prev.find((item) => item.id === product.id && item.selectedSize === product.selectedSize);
+
       if (existing) {
-        // If item exists, update quantity
         return prev.map((item) =>
-          item.id === product.id ? { ...item, qty: item.qty + qty } : item
+          (item.id === product.id && item.selectedSize === product.selectedSize)
+            ? { ...item, qty: item.qty + qty }
+            : item
         );
       }
-      // If new item, add to list
+      // නැත්නම් අලුත් එකක් විදියට එකතු කරන්න
       return [...prev, { ...product, qty }];
     });
-    setIsCartOpen(true); // Open cart automatically
+    setIsCartOpen(true); // Item එක දැම්ම ගමන් Cart එක Open වෙනවා
   };
 
   // Remove item from cart

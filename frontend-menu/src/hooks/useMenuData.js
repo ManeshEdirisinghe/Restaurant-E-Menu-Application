@@ -24,7 +24,7 @@ export const useCategories = () => {
   useEffect(() => {
     axios.get(`${API_BASE}/categories`)
       .then(res => {
-        setData([{ id: 'all', name: 'View All', icon: '🍽️' }, ...res.data]);
+        setData([{ id: 'all', name: 'View All' }, ...res.data]);
       })
       .catch(err => console.error(err))
       .finally(() => setIsLoading(false));

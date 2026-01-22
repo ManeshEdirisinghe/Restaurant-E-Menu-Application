@@ -6,7 +6,7 @@ import CartDrawer from './components/CartDrawer';
 const API_BASE = 'http://localhost:3001';
 import CategoryNav from './components/CategoryNav';
 import ItemModal from './components/ItemModal';
-import { Toaster } from 'react-hot-toast';
+// import { Toaster } from 'react-hot-toast';
 
 // --- HOOKS ---
 
@@ -910,7 +910,7 @@ function App() {
 
       <Footer restaurant={restaurant} />
 
-      <Toaster position="bottom-center" toastOptions={{ duration: 3000 }} />
+      {/* <Toaster position="bottom-center" toastOptions={{ duration: 3000 }} /> */}
 
       <ItemModal
         item={selectedItem}

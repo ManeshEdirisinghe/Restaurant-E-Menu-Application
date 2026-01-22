@@ -11,7 +11,7 @@ const SIZE_OPTIONS = [
 
 const ItemModal = ({ item, isOpen, onClose, onAddToCart }) => {
   if (!isOpen || !item) return null;
-
+  
   const [qty, setQty] = useState(1);
   const [selectedSize, setSelectedSize] = useState('medium');
 
@@ -40,16 +40,16 @@ const ItemModal = ({ item, isOpen, onClose, onAddToCart }) => {
     if (onAddToCart) {
       onAddToCart(itemToAdd, qty);
       toast.success(`Added ${qty} ${item.name} to order!`, {
-        style: {
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff',
-        },
-        iconTheme: {
-          primary: '#f97316', // Orange color
-          secondary: '#fff',
-        },
-      });
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+      iconTheme: {
+        primary: '#f97316', // Orange color
+        secondary: '#fff',
+      },
+    });
     }
     onClose();
   };
@@ -161,7 +161,7 @@ const ItemModal = ({ item, isOpen, onClose, onAddToCart }) => {
               <span className="font-bold text-lg w-6 text-center text-gray-900 dark:text-white">{qty}</span>
               <button onClick={() => setQty(qty + 1)} className="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white active:text-orange-500 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"><Plus size={20} /></button>
             </div>
-
+            
             {/* Main Button with New Logic */}
             <button
               className="flex-1 bg-gray-900 dark:bg-orange-600 text-white py-3 sm:py-4 rounded-xl font-bold text-sm sm:text-base hover:bg-gray-800 dark:hover:bg-orange-500 transition-colors shadow-lg shadow-gray-900/20 dark:shadow-orange-600/30 active:scale-[0.98] transform duration-100 min-h-[52px]"

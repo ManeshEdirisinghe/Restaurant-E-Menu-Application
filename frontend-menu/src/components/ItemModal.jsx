@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Clock, Flame, Minus, Plus } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 // Size and Add-on options configuration
 const SIZE_OPTIONS = [

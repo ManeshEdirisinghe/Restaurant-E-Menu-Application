@@ -910,6 +910,8 @@ function App() {
 
       <Footer restaurant={restaurant} />
 
+      <Toaster position="bottom-center" toastOptions={{ duration: 3000 }} />
+
       <ItemModal
         item={selectedItem}
         isOpen={!!selectedItem}

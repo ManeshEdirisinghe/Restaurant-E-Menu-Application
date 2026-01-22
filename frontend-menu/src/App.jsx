@@ -7,6 +7,7 @@ const API_BASE = 'http://localhost:3001';
 import CategoryNav from './components/CategoryNav';
 import ItemModal from './components/ItemModal';
 // import { Toaster } from 'react-hot-toast';
+import Toast from './components/Toast';
 
 // --- HOOKS ---
 
@@ -751,7 +752,8 @@ function App() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-
+  const [toastMsg, setToastMsg] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
   // New filter states
   const [sortBy, setSortBy] = useState("default");

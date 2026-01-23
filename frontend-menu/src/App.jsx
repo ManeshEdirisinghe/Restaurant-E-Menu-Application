@@ -81,10 +81,16 @@ const useMenuItems = (filters) => {
 // --- INTERNAL COMPONENTS (Header, Hero, FilterBar, MenuGrid, Footer) ---
 
 // 1. HEADER COMPONENT
+// 1. HEADER COMPONENT
 const Header = ({ restaurant, cartItemCount, isDarkMode, onToggleDarkMode, onOpenCart, onOpenFavorites, favoritesCount }) => {
+  // Button Style එක වෙනම විචල්‍යයකට ගත්තා ලේසි වෙන්න
+  const buttonStyle = "relative bg-white/10 backdrop-blur-md min-w-[44px] min-h-[44px] p-2.5 sm:p-3 rounded-xl border border-white/20 hover:bg-white/20 active:bg-white/30 transition-colors flex items-center justify-center";
+
   return (
     <header className="absolute top-0 left-0 right-0 z-50 px-3 sm:px-6 py-3 sm:py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
+
+        {/* Logo Section */}
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="bg-white/10 backdrop-blur-md p-2 sm:p-2.5 rounded-xl border border-white/20">
             <ChefHat className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -93,18 +99,35 @@ const Header = ({ restaurant, cartItemCount, isDarkMode, onToggleDarkMode, onOpe
             {restaurant?.name || 'Restaurant'}
           </span>
         </div>
+
+        {/* Right Side Buttons */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <button onClick={onToggleDarkMode} className="relative bg-white/10 backdrop-blur-md min-w-[44px] min-h-[44px] p-2.5 sm:p-3 rounded-xl border border-white/20 hover:bg-white/20 active:bg-white/30 transition-colors flex items-center justify-center">
+
+          {/* 1. Dark Mode Button */}
+          <button onClick={onToggleDarkMode} className={buttonStyle}>
             {isDarkMode ? <Sun className="w-5 h-5 text-yellow-300" /> : <Moon className="w-5 h-5 text-white" />}
           </button>
-          <button onClick={onOpenFavorites} className="relative bg-white/10 backdrop-blur-md min-w-[44px] min-h-[44px] p-2.5 sm:p-3 rounded-xl border border-white/20 hover:bg-white/20 active:bg-white/30 transition-colors flex items-center justify-center">
+
+          {/* 2. Favorites Button */}
+          <button onClick={onOpenFavorites} className={buttonStyle}>
             <Heart className="w-5 h-5 text-white" />
-            {favoritesCount > 0 && <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">{favoritesCount}</span>}
+            {favoritesCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">
+                {favoritesCount}
+              </span>
+            )}
           </button>
-          <button onClick={onOpenCart} className="relative p-2 rounded-full hover:bg-white/10 transition-colors">
-            <ShoppingCart size={24} className="text-white" />
-            {cartItemCount > 0 && <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">{cartItemCount}</span>}
+
+          {/* 3. Cart Button (දැන් මේකත් අනිත් ඒවා වගේමයි) */}
+          <button onClick={onOpenCart} className={buttonStyle}>
+            <ShoppingCart className="w-5 h-5 text-white" />
+            {cartItemCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">
+                {cartItemCount}
+              </span>
+            )}
           </button>
+
         </div>
       </div>
     </header>
@@ -232,7 +255,7 @@ const MenuGrid = ({ items, isLoading, onOpenModal, favorites = [], onToggleFavor
           <div key={item.id} onClick={() => onOpenModal(item)} className="group bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 dark:hover:shadow-black/30 sm:hover:-translate-y-1 transition-all duration-300 sm:duration-500 cursor-pointer flex flex-col h-full active:scale-[0.98] sm:active:scale-100">
             <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-gray-100 dark:bg-gray-700">
               <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80'; }} />
-              
+
               {/* Heart Button */}
               <button onClick={(e) => { e.stopPropagation(); onToggleFavorite(item); }} className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm hover:scale-110 active:scale-95 transition-all shadow-sm">
                 <Heart size={20} className={`transition-colors ${isFavorite(item.id) ? 'fill-red-500 text-red-500' : 'text-gray-700 dark:text-white'}`} />
@@ -303,7 +326,7 @@ function App() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const { data: restaurant, isLoading: isLoadingRestaurant } = useRestaurant();
   const { data: categories = [], isLoading: isLoadingCategories } = useCategories();
-  
+
   const filters = useMemo(() => ({ category: activeCategory, search: debouncedSearch }), [activeCategory, debouncedSearch]);
   const { data: menuItems = [], isLoading: isLoadingItems } = useMenuItems(filters);
   const { cartItems, isCartOpen, setIsCartOpen, addToCart, removeFromCart, updateQty, cartTotal, cartCount } = useCart();
@@ -327,8 +350,8 @@ function App() {
     setDietaryFilters(prev => prev.includes(diet) ? prev.filter(d => d !== diet) : [...prev, diet]);
   };
 
-  const priceRanges = { 'all': {min:0,max:Infinity}, 'budget':{min:0,max:10}, 'mid':{min:10,max:20}, 'premium':{min:20,max:30}, 'luxury':{min:30,max:Infinity} };
-  
+  const priceRanges = { 'all': { min: 0, max: Infinity }, 'budget': { min: 0, max: 10 }, 'mid': { min: 10, max: 20 }, 'premium': { min: 20, max: 30 }, 'luxury': { min: 30, max: Infinity } };
+
   const filteredAndSortedItems = useMemo(() => {
     let result = [...menuItems];
     if (priceRange !== 'all') {
@@ -336,20 +359,20 @@ function App() {
       result = result.filter(item => item.price >= min && item.price < max);
     }
     if (dietaryFilters.length > 0) result = result.filter(item => dietaryFilters.every(diet => item.dietary?.includes(diet)));
-    
+
     switch (sortBy) {
-      case 'price-asc': result.sort((a,b)=>a.price-b.price); break;
-      case 'price-desc': result.sort((a,b)=>b.price-a.price); break;
-      case 'name-asc': result.sort((a,b)=>a.name.localeCompare(b.name)); break;
-      case 'name-desc': result.sort((a,b)=>b.name.localeCompare(a.name)); break;
-      case 'popular': result.sort((a,b)=>(b.popular?1:0)-(a.popular?1:0)); break;
+      case 'price-asc': result.sort((a, b) => a.price - b.price); break;
+      case 'price-desc': result.sort((a, b) => b.price - a.price); break;
+      case 'name-asc': result.sort((a, b) => a.name.localeCompare(b.name)); break;
+      case 'name-desc': result.sort((a, b) => b.name.localeCompare(a.name)); break;
+      case 'popular': result.sort((a, b) => (b.popular ? 1 : 0) - (a.popular ? 1 : 0)); break;
     }
     return result;
   }, [menuItems, priceRange, dietaryFilters, sortBy]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans selection:bg-orange-100 selection:text-orange-900 dark:selection:bg-orange-900 dark:selection:text-orange-100 flex flex-col transition-colors duration-300">
-      
+
       <Header
         restaurant={restaurant}
         cartItemCount={cartCount}
@@ -394,7 +417,7 @@ function App() {
         onUpdateQty={updateQty}
         total={cartTotal}
       />
-      
+
       <FavoritesDrawer
         isOpen={isFavDrawerOpen}
         onClose={() => setIsFavDrawerOpen(false)}
@@ -414,7 +437,7 @@ function App() {
       <Footer restaurant={restaurant} />
 
       <Toast message={toastMsg} isVisible={showToast} onClose={() => setShowToast(false)} />
-      
+
       <ItemModal
         item={selectedItem}
         isOpen={!!selectedItem}

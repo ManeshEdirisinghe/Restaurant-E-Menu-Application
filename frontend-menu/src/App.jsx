@@ -8,6 +8,8 @@ import CategoryNav from './components/CategoryNav';
 import ItemModal from './components/ItemModal';
 // import { Toaster } from 'react-hot-toast';
 import Toast from './components/Toast';
+import { useFavorites } from './hooks/useFavorites';
+import FavoritesDrawer from './components/FavoritesDrawer';
 
 
 // --- HOOKS ---

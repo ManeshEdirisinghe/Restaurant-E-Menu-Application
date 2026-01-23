@@ -128,11 +128,11 @@ const useMenuItems = (filters) => {
 
 
 
-const Header = ({ restaurant, cartItemCount, isDarkMode, onToggleDarkMode, onOpenCart }) => {
+const Header = ({ restaurant, cartItemCount, isDarkMode, onToggleDarkMode, onOpenCart, onOpenFavorites, favoritesCount }) => {
   return (
     <header className="absolute top-0 left-0 right-0 z-50 px-3 sm:px-6 py-3 sm:py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Logo / Brand */}
+        {/* Logo */}
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="bg-white/10 backdrop-blur-md p-2 sm:p-2.5 rounded-xl border border-white/20">
             <ChefHat className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -144,25 +144,34 @@ const Header = ({ restaurant, cartItemCount, isDarkMode, onToggleDarkMode, onOpe
 
         {/* Right side buttons */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Dark Mode Toggle */}
+          
+          {/* Dark Mode */}
           <button
             onClick={onToggleDarkMode}
             className="relative bg-white/10 backdrop-blur-md min-w-[44px] min-h-[44px] p-2.5 sm:p-3 rounded-xl border border-white/20 hover:bg-white/20 active:bg-white/30 transition-colors flex items-center justify-center"
-            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {isDarkMode ? (
-              <Sun className="w-5 h-5 text-yellow-300" />
-            ) : (
-              <Moon className="w-5 h-5 text-white" />
+            {isDarkMode ? <Sun className="w-5 h-5 text-yellow-300" /> : <Moon className="w-5 h-5 text-white" />}
+          </button>
+
+          {/* Favorites Icon (New) */}
+          <button
+            onClick={onOpenFavorites}
+            className="relative bg-white/10 backdrop-blur-md min-w-[44px] min-h-[44px] p-2.5 sm:p-3 rounded-xl border border-white/20 hover:bg-white/20 active:bg-white/30 transition-colors flex items-center justify-center"
+          >
+            <Heart className="w-5 h-5 text-white" />
+            {favoritesCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">
+                {favoritesCount}
+              </span>
             )}
           </button>
 
           {/* Cart Icon */}
           <button
             onClick={onOpenCart}
-            className="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="relative p-2 rounded-full hover:bg-white/10 transition-colors"
           >
-            <ShoppingCart size={24} className="text-gray-700 dark:text-gray-200" />
+            <ShoppingCart size={24} className="text-white" />
             {cartItemCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">
                 {cartItemCount}

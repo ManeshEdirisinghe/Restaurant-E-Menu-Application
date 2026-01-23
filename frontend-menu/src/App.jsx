@@ -889,9 +889,11 @@ function App() {
       <Header
         restaurant={restaurant}
         cartItemCount={cartCount}
+        favoritesCount={favorites.length}
         isDarkMode={isDarkMode}
         onToggleDarkMode={toggleDarkMode}
         onOpenCart={() => setIsCartOpen(true)}
+        onOpenFavorites={() => setIsFavDrawerOpen(true)}
       />
 
       <Hero

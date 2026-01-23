@@ -932,10 +932,20 @@ function App() {
         total={cartTotal}
       />
 
+      <FavoritesDrawer
+        isOpen={isFavDrawerOpen}
+        onClose={() => setIsFavDrawerOpen(false)}
+        favorites={favorites}
+        onToggleFavorite={toggleFavorite}
+        onAddToCart={handleAddToCartWithToast}
+      />
+
       <MenuGrid
         items={filteredAndSortedItems}
         isLoading={isLoadingItems}
         onOpenModal={handleOpenModal}
+        favorites={favorites}
+        onToggleFavorite={toggleFavorite}
       />
 
       <Footer restaurant={restaurant} />

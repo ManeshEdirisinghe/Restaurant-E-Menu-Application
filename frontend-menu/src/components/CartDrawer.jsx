@@ -3,7 +3,7 @@ import { X, Minus, Plus, ShoppingBag, ArrowLeft, MessageCircle } from 'lucide-re
 import { useCart } from '../hooks/useCart';
 
 // ⚠️ වැදගත්: මෙතනට ඔයාගේ WhatsApp නම්බර් එක දාන්න (94 න් පටන් ගන්න)
-const MY_PHONE_NUMBER = '94712345678'; 
+const MY_PHONE_NUMBER = '94773257487'; 
 
 const CartDrawer = () => {
   const { 

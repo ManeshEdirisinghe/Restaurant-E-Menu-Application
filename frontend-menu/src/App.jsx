@@ -146,7 +146,7 @@ const Header = ({ restaurant, cartItemCount, isDarkMode, onToggleDarkMode, onOpe
 
         {/* Right side buttons */}
         <div className="flex items-center gap-2 sm:gap-3">
-          
+
           {/* Dark Mode */}
           <button
             onClick={onToggleDarkMode}
@@ -799,6 +799,13 @@ function App() {
     'premium': { min: 20, max: 30 },
     'luxury': { min: 30, max: Infinity },
   };
+
+  const {
+    favorites,
+    toggleFavorite,
+    isFavDrawerOpen,
+    setIsFavDrawerOpen
+  } = useFavorites();
 
   // Apply client-side filtering and sorting
   const filteredAndSortedItems = useMemo(() => {

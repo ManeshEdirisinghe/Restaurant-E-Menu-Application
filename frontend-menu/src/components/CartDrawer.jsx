@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, Minus, Plus, ShoppingBag, ArrowLeft, MessageCircle } from 'lucide-react';
 
 // IMPORTANT: Replace this with your WhatsApp number (format: 94xxxxxxxxx)
-const MY_PHONE_NUMBER = '94712345678'; 
+const MY_PHONE_NUMBER = '94773257487'; 
 
 const CartDrawer = ({ isOpen, onClose, items, onRemove, onUpdateQty, total }) => {
   
